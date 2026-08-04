@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0a0a0b;
+  --surface: #141416;
+  --elevated: #1c1c20;
+  --text: #f4f4f1;
+  --muted: #a1a1a6;
+  --accent: #ffb020;
+  --accent-hover: #ffc24d;
+  --hairline: rgba(255, 255, 255, 0.08);
+
+  --radius-card: 16px;
+  --radius-pill: 999px;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-elevated: var(--elevated);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-hairline: var(--hairline);
+
+  --radius-card: var(--radius-card);
+  --radius-pill: var(--radius-pill);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+
+  --text-display-2xl: 5.5rem;
+  --text-display-2xl--line-height: 1;
+  --text-display-2xl--letter-spacing: -0.02em;
+  --text-display-xl: 4rem;
+  --text-display-xl--line-height: 1.05;
+  --text-display-xl--letter-spacing: -0.02em;
+  --text-display-lg: 3rem;
+  --text-display-lg--line-height: 1.1;
+  --text-display-lg--letter-spacing: -0.01em;
+  --text-display-md: 2.25rem;
+  --text-display-md--line-height: 1.15;
+  --text-display-md--letter-spacing: -0.01em;
+  --text-display-sm: 1.5rem;
+  --text-display-sm--line-height: 1.25;
+
+  --text-display-hero: clamp(3.5rem, 9vw, 11rem);
+  --text-display-hero--line-height: 0.95;
+  --text-display-hero--letter-spacing: -0.03em;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Deliberately unlayered so it wins over Tailwind's utility layer
+   regardless of class ordering, guaranteeing a consistent, visible,
+   on-brand focus indicator on every interactive element. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}

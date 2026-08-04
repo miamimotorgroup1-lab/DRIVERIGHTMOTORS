@@ -7,7 +7,8 @@ import Gallery from "@/components/ui/Gallery";
 import LeadTrigger from "@/components/ui/LeadTrigger";
 import Reveal from "@/components/ui/Reveal";
 import { carImageExists } from "@/lib/car-images";
-import { getAllCars, getCarBySlug, type Car } from "@/lib/inventory";
+import type { Car } from "@/lib/inventory";
+import { getAllCars, getCarBySlug } from "@/lib/inventory-queries";
 import { CANVAS, GUTTER } from "@/lib/layout";
 
 const EYEBROW = "text-xs uppercase tracking-[0.2em] text-muted";
@@ -16,15 +17,16 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return getAllCars().map((car) => ({ slug: car.slug }));
+export async function generateStaticParams() {
+  const cars = await getAllCars();
+  return cars.map((car) => ({ slug: car.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const car = getCarBySlug(slug);
+  const car = await getCarBySlug(slug);
   if (!car) return {};
 
   const price = `$${car.price.toLocaleString()}`;
@@ -82,14 +84,14 @@ function SpecRow({ label, value }: { label: string; value: string }) {
 
 export default async function CarDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const car = getCarBySlug(slug);
+  const car = await getCarBySlug(slug);
 
   if (!car) {
     notFound();
   }
 
   const hasImageList = car.images.map((src) => carImageExists(src));
-  const relatedCars = getRelatedCars(car, getAllCars());
+  const relatedCars = getRelatedCars(car, await getAllCars());
   const title = `${car.year} ${car.make} ${car.model}`;
 
   return (

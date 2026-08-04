@@ -9,7 +9,7 @@ import MagneticButton from "@/components/ui/MagneticButton";
 import Reveal from "@/components/ui/Reveal";
 import { carImageExists } from "@/lib/car-images";
 import { DEALER } from "@/lib/dealer";
-import { getFeaturedCars } from "@/lib/inventory";
+import { getFeaturedCars } from "@/lib/inventory-queries";
 import { CANVAS, GUTTER } from "@/lib/layout";
 
 const TITLE = "Drive Right Motors — Pre-Owned Vehicles in Miami";
@@ -39,8 +39,8 @@ const STATS = [
 
 const OFFSETS = ["", "sm:mt-10", "sm:mt-4"];
 
-export default function Home() {
-  const featuredCars = getFeaturedCars();
+export default async function Home() {
+  const featuredCars = await getFeaturedCars();
   const heroCar = featuredCars[0];
   const heroHasImage = heroCar
     ? carImageExists(heroCar.images[0] ?? "")

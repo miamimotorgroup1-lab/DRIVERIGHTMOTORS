@@ -1,4 +1,7 @@
-import carsData from "@/data/cars.json";
+// Shared, client-safe inventory types + pure helpers. Safe to import from
+// both Server and Client Components. The Prisma-backed data access lives in
+// lib/inventory-queries.ts (server-only) so this file never pulls the `pg`
+// driver / Node built-ins into the browser bundle.
 
 export type CarStatus = "available" | "sold" | "pending";
 
@@ -35,20 +38,6 @@ export type CarFilters = {
   query?: string;
 };
 
-const cars = carsData as Car[];
-
-export function getAllCars(): Car[] {
-  return cars;
-}
-
-export function getFeaturedCars(): Car[] {
-  return cars.filter((car) => car.featured);
-}
-
-export function getCarBySlug(slug: string): Car | undefined {
-  return cars.find((car) => car.slug === slug);
-}
-
 export function filterCars(cars: Car[], filters: CarFilters): Car[] {
   const query = filters.query?.trim().toLowerCase();
 
@@ -71,11 +60,3 @@ export function filterCars(cars: Car[], filters: CarFilters): Car[] {
     return true;
   });
 }
-
-export const makes: string[] = Array.from(
-  new Set(cars.map((car) => car.make)),
-).sort();
-
-export const bodyTypes: string[] = Array.from(
-  new Set(cars.map((car) => car.bodyType)),
-).sort();

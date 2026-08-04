@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import InventoryGrid from "@/components/inventory/InventoryGrid";
 import Reveal from "@/components/ui/Reveal";
 import { carImageExists } from "@/lib/car-images";
-import { bodyTypes, getAllCars, makes } from "@/lib/inventory";
+import { getAllCars, getBodyTypes, getMakes } from "@/lib/inventory-queries";
 import { GUTTER } from "@/lib/layout";
 
 const TITLE = "Inventory — Drive Right Motors";
@@ -20,8 +20,12 @@ export const metadata: Metadata = {
 
 const EYEBROW = "text-xs uppercase tracking-[0.2em] text-muted";
 
-export default function InventoryPage() {
-  const cars = getAllCars();
+export default async function InventoryPage() {
+  const [cars, makes, bodyTypes] = await Promise.all([
+    getAllCars(),
+    getMakes(),
+    getBodyTypes(),
+  ]);
   const hasImageBySlug = Object.fromEntries(
     cars.map((car) => [car.slug, carImageExists(car.images[0] ?? "")]),
   );

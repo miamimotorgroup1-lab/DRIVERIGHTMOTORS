@@ -1,0 +1,46 @@
+// Prisma schema for Drive Right Motors inventory.
+// Connection URLs are NOT set here — Prisma 7 moved datasource URLs out of
+// schema.prisma and into prisma.config.ts (CLI/migrations) and the
+// PrismaClient driver adapter (app runtime). See lib/prisma.ts and
+// prisma.config.ts.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CarStatus {
+  available
+  sold
+  pending
+}
+
+// Mirrors the Car type in lib/inventory.ts exactly (plus createdAt/updatedAt).
+model Car {
+  id            String    @id
+  slug          String    @unique
+  make          String
+  model         String
+  year          Int
+  price         Int
+  mileage       Int
+  bodyType      String
+  transmission  String
+  drivetrain    String
+  fuelType      String
+  exteriorColor String
+  interiorColor String
+  engine        String
+  vin           String
+  features      String[]
+  description   String
+  images        String[]
+  status        CarStatus @default(available)
+  featured      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}

@@ -1,20 +1,10 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter } from "next/font/google";
 import LeadModalProvider from "@/components/providers/LeadModalProvider";
 import Footer from "@/components/ui/Footer";
 import Nav from "@/components/ui/Nav";
+import { inter, spaceGrotesk } from "@/lib/fonts";
 import SmoothScrollProvider from "./smooth-scroll-provider";
-import "./globals.css";
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-display",
-  subsets: ["latin"],
-});
-
-const inter = Inter({
-  variable: "--font-body",
-  subsets: ["latin"],
-});
+import "../globals.css";
 
 export const metadata: Metadata = {
   // TODO: swap for the real production domain before launch.

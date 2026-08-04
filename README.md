@@ -20,6 +20,26 @@ domain. Without a configured `RESEND_API_KEY` / `DEALER_EMAIL`, the API route
 returns a 500 rather than throwing, so the rest of the site still works — only
 lead submission is affected.
 
+### Database & admin auth (Supabase)
+
+Inventory data and admin login both run on the same Supabase project. Create
+a `.env` file (already gitignored) with:
+
+```bash
+# Postgres, via Prisma — see prisma.config.ts and lib/prisma.ts
+DATABASE_URL=   # Session pooler connection string (Project Settings → Database)
+DIRECT_URL=     # Direct connection string, used only for migrations
+
+# Supabase Auth — see lib/supabase/. Both are public (NEXT_PUBLIC_) by
+# design; safe to expose to the browser.
+NEXT_PUBLIC_SUPABASE_URL=       # Project Settings → API → Project URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Project Settings → API → anon/public key
+```
+
+The `/admin` area (email + password, protected by `proxy.ts`) has **no public
+sign-up route** — the admin user is created manually in the Supabase
+dashboard (Authentication → Users → Add user), not through the app.
+
 ## Getting Started
 
 First, run the development server:

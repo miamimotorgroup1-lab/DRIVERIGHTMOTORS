@@ -56,6 +56,15 @@ export async function getCarBySlug(slug: string): Promise<Car | undefined> {
   return car ?? undefined;
 }
 
+// Used by the admin edit form (id, not slug, since slug is user-editable).
+export async function getCarById(id: string): Promise<Car | undefined> {
+  const car = await prisma.car.findUnique({
+    where: { id },
+    select: CAR_SELECT,
+  });
+  return car ?? undefined;
+}
+
 export async function getMakes(): Promise<string[]> {
   const cars = await prisma.car.findMany({ select: { make: true } });
   return Array.from(new Set(cars.map((car) => car.make))).sort();

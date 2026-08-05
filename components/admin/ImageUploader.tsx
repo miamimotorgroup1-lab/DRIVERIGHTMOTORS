@@ -21,9 +21,18 @@ type UploadItem = {
   error?: string;
 };
 
+type ImagesUpdater = string[] | ((prev: string[]) => string[]);
+
 type ImageUploaderProps = {
   images: string[];
-  onChange: (images: string[]) => void;
+  // Accepts a functional updater (like setState) rather than a plain array
+  // — uploads resolve asynchronously, and when two are in flight at once
+  // (e.g. a multi-file drop), each one's success callback must apply against
+  // the *latest* array, not the `images` prop it closed over when the
+  // upload started. A plain-value onChange caused exactly that: whichever
+  // upload's callback ran last would silently overwrite the other's URL,
+  // even though both files uploaded fine to Storage.
+  onChange: (update: ImagesUpdater) => void;
   error?: string;
 };
 
@@ -114,7 +123,7 @@ export default function ImageUploader({
       })
         .then((url) => {
           setUploads((prev) => prev.filter((item) => item.id !== id));
-          onChange([...images, url]);
+          onChange((prev) => [...prev, url]);
         })
         .catch((err: Error) => {
           setUploads((prev) =>
@@ -138,8 +147,12 @@ export default function ImageUploader({
   }
 
   async function removeImage(index: number) {
+    // `index` is the position the user sees right now (the `images` prop);
+    // the removal itself is applied by value against the latest array, in
+    // case an in-flight upload's functional update lands between the click
+    // and this running.
     const url = images[index];
-    onChange(images.filter((_, i) => i !== index));
+    onChange((prev) => prev.filter((item) => item !== url));
     try {
       await fetch("/api/admin/car-images", {
         method: "DELETE",
@@ -156,9 +169,18 @@ export default function ImageUploader({
   function move(index: number, direction: -1 | 1) {
     const target = index + direction;
     if (target < 0 || target >= images.length) return;
-    const next = [...images];
-    [next[index], next[target]] = [next[target], next[index]];
-    onChange(next);
+    // Same reasoning as removeImage: swap by value against the latest array
+    // rather than assuming `images` (this render's prop) is still current.
+    const a = images[index];
+    const b = images[target];
+    onChange((prev) => {
+      const ai = prev.indexOf(a);
+      const bi = prev.indexOf(b);
+      if (ai === -1 || bi === -1) return prev;
+      const next = [...prev];
+      [next[ai], next[bi]] = [next[bi], next[ai]];
+      return next;
+    });
   }
 
   return (

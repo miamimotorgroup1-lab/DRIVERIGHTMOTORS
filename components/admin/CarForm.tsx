@@ -236,8 +236,17 @@ export default function CarForm({ mode, car }: CarFormProps) {
   );
   const slugCheckId = useRef(0);
 
-  function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  function updateField<K extends keyof FormState>(
+    key: K,
+    value: FormState[K] | ((prev: FormState[K]) => FormState[K]),
+  ) {
+    setForm((prev) => ({
+      ...prev,
+      [key]:
+        typeof value === "function"
+          ? (value as (prev: FormState[K]) => FormState[K])(prev[key])
+          : value,
+    }));
   }
 
   function updateIdentity(

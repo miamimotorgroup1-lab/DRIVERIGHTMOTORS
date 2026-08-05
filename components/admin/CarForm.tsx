@@ -3,6 +3,7 @@
 import { Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import ImageUploader from "@/components/admin/ImageUploader";
 import MagneticButton from "@/components/ui/MagneticButton";
 import type { Car } from "@/lib/inventory";
 import {
@@ -567,14 +568,12 @@ export default function CarForm({ mode, car }: CarFormProps) {
       <section className="space-y-6">
         <SectionTitle>Images</SectionTitle>
         <p className="text-sm text-muted">
-          Ordered list of image URLs — the first is used as the thumbnail.
-          Photo upload is a later phase, so paste full URLs for now.
+          Upload photos or drag them in below. The first image is the
+          inventory card and gallery cover — reorder with the arrows.
         </p>
-        <ListEditor
-          label="Image URLs"
-          items={form.images}
+        <ImageUploader
+          images={form.images}
           onChange={(items) => updateField("images", items)}
-          placeholder="https://…"
           error={errors.images}
         />
       </section>

@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ChevronDown,
-  ChevronUp,
-  ImagePlus,
-  Link as LinkIcon,
-  Star,
-  Trash2,
-} from "lucide-react";
+import { ChevronDown, ChevronUp, ImagePlus, Star, Trash2 } from "lucide-react";
 import { useRef, useState, type ChangeEvent, type DragEvent } from "react";
 import CarImage from "@/components/ui/CarImage";
 
@@ -94,7 +87,6 @@ export default function ImageUploader({
 }: ImageUploaderProps) {
   const [uploads, setUploads] = useState<UploadItem[]>([]);
   const [dragOver, setDragOver] = useState(false);
-  const [pasteUrl, setPasteUrl] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   function handleFiles(files: FileList | File[]) {
@@ -167,13 +159,6 @@ export default function ImageUploader({
     const next = [...images];
     [next[index], next[target]] = [next[target], next[index]];
     onChange(next);
-  }
-
-  function addPastedUrl() {
-    const value = pasteUrl.trim();
-    if (!value) return;
-    onChange([...images, value]);
-    setPasteUrl("");
   }
 
   return (
@@ -315,35 +300,6 @@ export default function ImageUploader({
       )}
 
       {error && <p className="text-xs text-red-400">{error}</p>}
-
-      <details className="group">
-        <summary className="flex w-fit cursor-pointer select-none items-center gap-1.5 text-xs uppercase tracking-[0.15em] text-muted transition-colors duration-300 hover:text-text">
-          <LinkIcon size={12} />
-          Add by URL instead
-        </summary>
-        <div className="mt-3 flex gap-2">
-          <input
-            type="text"
-            value={pasteUrl}
-            onChange={(event) => setPasteUrl(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                event.preventDefault();
-                addPastedUrl();
-              }
-            }}
-            placeholder="https://…"
-            className="w-full border-b border-hairline bg-transparent py-2 text-sm text-text placeholder:text-muted focus:border-accent"
-          />
-          <button
-            type="button"
-            onClick={addPastedUrl}
-            className="shrink-0 rounded-pill border border-hairline px-4 py-2 text-xs text-muted transition-colors duration-300 hover:border-accent hover:text-accent"
-          >
-            Add
-          </button>
-        </div>
-      </details>
     </div>
   );
 }

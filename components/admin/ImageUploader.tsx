@@ -1,8 +1,16 @@
 "use client";
 
 import { ChevronDown, ChevronUp, ImagePlus, Star, Trash2 } from "lucide-react";
-import { useRef, useState, type ChangeEvent, type DragEvent } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type DragEvent,
+} from "react";
 import CarImage from "@/components/ui/CarImage";
+import CropModal from "@/components/admin/CropModal";
 
 const MAX_BYTES = 10 * 1024 * 1024;
 const ALLOWED_TYPES = new Set([
@@ -47,8 +55,12 @@ function validateFile(file: File): string | null {
 }
 
 // XHR (not fetch) so we get real upload progress via xhr.upload.onprogress.
+// Takes the CROPPED blob (from CropModal), not the original file — `name`
+// is only carried along for the uploads-in-progress list in the UI; the
+// server derives the extension from the blob's own content type.
 function uploadWithProgress(
-  file: File,
+  blob: Blob,
+  name: string,
   onProgress: (percent: number) => void,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -84,7 +96,7 @@ function uploadWithProgress(
     };
     xhr.onerror = () => reject(new Error("Network error during upload."));
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file", blob, name);
     xhr.send(formData);
   });
 }
@@ -98,41 +110,79 @@ export default function ImageUploader({
   const [dragOver, setDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  function handleFiles(files: FileList | File[]) {
-    for (const file of Array.from(files)) {
-      const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-      const validationError = validateFile(file);
+  // Files that passed validation and are waiting to be framed. cropQueue[0]
+  // is always the one currently shown in CropModal — "advancing" is just
+  // shifting the array, so there's only ever one crop step on screen even
+  // when several files were dropped at once.
+  const [cropQueue, setCropQueue] = useState<File[]>([]);
+  const activeCropFile = cropQueue[0] ?? null;
 
+  // Derived, not stored — creating the object URL belongs in render (it's a
+  // pure function of activeCropFile), revoking it is the one real side
+  // effect and lives in a cleanup-only effect below.
+  const cropImageUrl = useMemo(
+    () => (activeCropFile ? URL.createObjectURL(activeCropFile) : null),
+    [activeCropFile],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (cropImageUrl) URL.revokeObjectURL(cropImageUrl);
+    };
+  }, [cropImageUrl]);
+
+  function startUpload(blob: Blob, name: string) {
+    const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    setUploads((prev) => [...prev, { id, name, progress: 0, status: "uploading" }]);
+
+    uploadWithProgress(blob, name, (progress) => {
+      setUploads((prev) =>
+        prev.map((item) => (item.id === id ? { ...item, progress } : item)),
+      );
+    })
+      .then((url) => {
+        setUploads((prev) => prev.filter((item) => item.id !== id));
+        onChange((prev) => [...prev, url]);
+      })
+      .catch((err: Error) => {
+        setUploads((prev) =>
+          prev.map((item) =>
+            item.id === id ? { ...item, status: "error", error: err.message } : item,
+          ),
+        );
+      });
+  }
+
+  // Type/size are checked on the ORIGINAL file, before it ever reaches the
+  // cropper — an oversized or wrong-type file shouldn't cost the user a
+  // crop step before being rejected.
+  function handleFiles(files: FileList | File[]) {
+    const queued: File[] = [];
+    for (const file of Array.from(files)) {
+      const validationError = validateFile(file);
       if (validationError) {
+        const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
         setUploads((prev) => [
           ...prev,
           { id, name: file.name, progress: 0, status: "error", error: validationError },
         ]);
         continue;
       }
-
-      setUploads((prev) => [
-        ...prev,
-        { id, name: file.name, progress: 0, status: "uploading" },
-      ]);
-
-      uploadWithProgress(file, (progress) => {
-        setUploads((prev) =>
-          prev.map((item) => (item.id === id ? { ...item, progress } : item)),
-        );
-      })
-        .then((url) => {
-          setUploads((prev) => prev.filter((item) => item.id !== id));
-          onChange((prev) => [...prev, url]);
-        })
-        .catch((err: Error) => {
-          setUploads((prev) =>
-            prev.map((item) =>
-              item.id === id ? { ...item, status: "error", error: err.message } : item,
-            ),
-          );
-        });
+      queued.push(file);
     }
+    if (queued.length > 0) {
+      setCropQueue((prev) => [...prev, ...queued]);
+    }
+  }
+
+  function handleCropConfirm(blob: Blob) {
+    if (!activeCropFile) return;
+    startUpload(blob, activeCropFile.name);
+    setCropQueue((prev) => prev.slice(1));
+  }
+
+  function handleCropCancel() {
+    setCropQueue((prev) => prev.slice(1));
   }
 
   function onDrop(event: DragEvent<HTMLDivElement>) {
@@ -322,6 +372,16 @@ export default function ImageUploader({
       )}
 
       {error && <p className="text-xs text-red-400">{error}</p>}
+
+      {activeCropFile && cropImageUrl && (
+        <CropModal
+          key={cropImageUrl}
+          imageSrc={cropImageUrl}
+          fileName={activeCropFile.name}
+          onConfirm={handleCropConfirm}
+          onCancel={handleCropCancel}
+        />
+      )}
     </div>
   );
 }

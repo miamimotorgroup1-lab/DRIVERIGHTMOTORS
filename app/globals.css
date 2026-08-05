@@ -153,3 +153,26 @@ body {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   background-repeat: repeat;
 }
+
+/* CitySkyline's lit-window pulse — plain CSS keyframes rather than a
+   framer-motion animate prop, and applied to a plain <circle> rather than
+   motion.circle. A CSS media query is also just a more direct way to
+   satisfy "no pulsing windows" under reduced motion than threading a
+   prop through: the browser itself never runs the animation, server and
+   client agree by construction, nothing to hydrate. */
+@keyframes window-pulse {
+  0%,
+  100% {
+    opacity: 0.18;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+@utility animate-window-pulse {
+  animation: window-pulse 4s ease-in-out infinite;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 0.22;
+  }
+}

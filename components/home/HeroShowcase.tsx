@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import CarImage from "@/components/ui/CarImage";
 import type { Car } from "@/lib/inventory";
 import { EASE, useSafeReducedMotion } from "@/lib/motion";
+import CitySkyline from "./CitySkyline";
 import GridHorizon from "./GridHorizon";
 
 const ROTATE_MS = 5000;
@@ -57,7 +58,13 @@ export default function HeroShowcase({
         ease: EASE,
       }}
     >
-      {/* Sunset horizon glow, low behind the car — one of this page's two
+      {/* Back-to-front: sky+skyline, then the car spotlight glow, then the
+          grid horizon, then the car itself. The skyline sits in the upper
+          portion and fades out before the grid begins, so the two read as
+          one continuous backdrop rather than two stacked rectangles. */}
+      <CitySkyline />
+
+      {/* Car spotlight — low behind the car. One of this page's two
           reserved sunset-gradient moments (the other is ShowroomIntro). */}
       <div
         aria-hidden="true"
@@ -91,7 +98,7 @@ export default function HeroShowcase({
 
       <Link
         href={`/inventory/${car.slug}`}
-        className="relative block h-full w-full overflow-hidden border border-hairline bg-elevated"
+        className="relative block h-full w-full overflow-hidden border border-hairline"
       >
         <AnimatePresence>
           <motion.div

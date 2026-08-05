@@ -5,8 +5,8 @@ export const EASE = [0.22, 1, 0.36, 1] as const;
 
 export const DURATION = {
   fast: 0.5,
-  base: 0.65,
-  slow: 0.8,
+  base: 0.75,
+  slow: 0.9,
 } as const;
 
 /**

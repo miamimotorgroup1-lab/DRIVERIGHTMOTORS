@@ -17,7 +17,7 @@ export default function CarCard({ car, hasImage, fluid = false }: CarCardProps) 
       href={`/inventory/${car.slug}`}
       className={`group block ${fluid ? "w-full" : "w-72 shrink-0 sm:w-80"}`}
     >
-      <div className="overflow-hidden rounded-card border border-hairline bg-surface transition-all duration-500 motion-reduce:transition-none group-hover:-translate-y-1.5 group-hover:border-accent">
+      <div className="overflow-hidden rounded-card border border-hairline bg-surface transition-all duration-500 motion-reduce:transition-none group-hover:-translate-y-1.5 group-hover:border-accent/60 group-hover:shadow-[0_18px_50px_-12px_rgba(255,46,136,0.35),0_10px_30px_-16px_rgba(34,211,238,0.3)]">
         <div className="relative aspect-[4/3] overflow-hidden bg-elevated">
           <CarImage
             src={image}

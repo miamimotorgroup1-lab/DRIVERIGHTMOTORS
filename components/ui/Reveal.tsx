@@ -19,7 +19,7 @@ export default function Reveal({
   className,
   delay = 0,
   duration = DURATION.base,
-  y = 24,
+  y = 28,
   stagger = 0,
   once = true,
 }: RevealProps) {
@@ -49,7 +49,7 @@ export default function Reveal({
         className={className}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once, margin: "-80px" }}
+        viewport={{ once, margin: "-100px" }}
         variants={container}
       >
         {Children.map(children, (child, index) => (
@@ -66,7 +66,7 @@ export default function Reveal({
       className={className}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once, margin: "-80px" }}
+      viewport={{ once, margin: "-100px" }}
       variants={item}
       transition={{ delay }}
     >

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DEALER } from "@/lib/dealer";
+import NeonDivider from "./NeonDivider";
 
 const QUICK_LINKS = [
   { label: "Inventory", href: "/inventory" },
@@ -12,7 +13,8 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-hairline bg-surface">
+    <footer className="bg-surface">
+      <NeonDivider />
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <p className="font-display text-lg text-text">DRIVE RIGHT MOTORS</p>

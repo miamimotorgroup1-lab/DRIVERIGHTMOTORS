@@ -1,14 +1,15 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLeadModal } from "@/components/providers/LeadModalProvider";
 import { CANVAS, GUTTER } from "@/lib/layout";
-import { EASE } from "@/lib/motion";
+import { EASE, useSafeReducedMotion } from "@/lib/motion";
 import MagneticButton from "./MagneticButton";
+import NeonDivider from "./NeonDivider";
 
 const NAV_LINKS = [
   { label: "Inventory", href: "/inventory" },
@@ -21,7 +22,7 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useSafeReducedMotion();
   const { openLead } = useLeadModal();
 
   const [previousPathname, setPreviousPathname] = useState(pathname);
@@ -49,10 +50,8 @@ export default function Nav() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-500 ${
-          scrolled
-            ? "border-hairline bg-surface/90 backdrop-blur"
-            : "border-transparent bg-transparent"
+        className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${
+          scrolled ? "bg-surface/80 backdrop-blur-md" : "bg-transparent"
         }`}
       >
         <div className={`flex h-20 items-center justify-between ${CANVAS} ${GUTTER}`}>
@@ -68,9 +67,10 @@ export default function Nav() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-muted transition-colors duration-300 hover:text-text"
+                className="group relative text-sm text-muted transition-colors duration-300 hover:text-text"
               >
                 {link.label}
+                <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-gradient-to-r from-accent to-accent-2 transition-transform duration-300 group-hover:scale-x-100" />
               </Link>
             ))}
           </nav>
@@ -104,6 +104,14 @@ export default function Nav() {
               </motion.span>
             </AnimatePresence>
           </button>
+        </div>
+
+        <div
+          className={`absolute inset-x-0 bottom-0 transition-opacity duration-500 ${
+            scrolled ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <NeonDivider />
         </div>
       </header>
 

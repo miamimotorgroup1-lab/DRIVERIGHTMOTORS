@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { ArrowRight, MapPin } from "lucide-react";
 import Link from "next/link";
-import HeroImage from "@/components/home/HeroImage";
-import ScrollCue from "@/components/home/ScrollCue";
+import HomeHero from "@/components/home/HomeHero";
 import CarCard from "@/components/ui/CarCard";
+import CountUp from "@/components/ui/CountUp";
 import LeadTrigger from "@/components/ui/LeadTrigger";
 import MagneticButton from "@/components/ui/MagneticButton";
+import NeonDivider from "@/components/ui/NeonDivider";
 import Reveal from "@/components/ui/Reveal";
 import { carImageExists } from "@/lib/car-images";
 import { DEALER } from "@/lib/dealer";
@@ -41,10 +42,9 @@ const OFFSETS = ["", "sm:mt-10", "sm:mt-4"];
 
 export default async function Home() {
   const featuredCars = await getFeaturedCars();
-  const heroCar = featuredCars[0];
-  const heroHasImage = heroCar
-    ? carImageExists(heroCar.images[0] ?? "")
-    : false;
+  const heroHasImageBySlug = Object.fromEntries(
+    featuredCars.map((car) => [car.slug, carImageExists(car.images[0] ?? "")]),
+  );
 
   return (
     <>
@@ -52,44 +52,10 @@ export default async function Home() {
       <section
         className={`relative flex min-h-screen flex-col justify-center overflow-hidden pb-32 pt-40 md:pt-48 ${GUTTER}`}
       >
-        <Reveal stagger={0.12} className="relative z-10 w-full lg:w-7/12">
-          <p className={EYEBROW}>Drive Right Motors — Pre-owned</p>
-          <h1 className={`mt-8 ${DISPLAY_HEADLINE}`}>
-            Find the one
-            <br />
-            you&apos;ll actually
-            <br />
-            keep.
-          </h1>
-          <p className="mt-8 max-w-sm text-base text-muted">
-            Hand-picked, inspected, and priced honestly — no games.
-          </p>
-          <div className="mt-10 flex flex-wrap items-center gap-10">
-            <MagneticButton href="/inventory" variant="accent">
-              Browse inventory
-              <ArrowRight size={16} />
-            </MagneticButton>
-            <LeadTrigger mode="test-drive" className={TEXT_LINK}>
-              Book a test drive
-              <ArrowRight
-                size={14}
-                className="transition-transform duration-300 group-hover:translate-x-1"
-              />
-            </LeadTrigger>
-          </div>
-        </Reveal>
-
-        <div className="mt-16 flex w-full justify-center lg:absolute lg:inset-y-0 lg:right-[-6vw] lg:mt-0 lg:w-[46vw] lg:max-w-2xl lg:items-center lg:justify-end">
-          <Reveal delay={0.25} className="w-full max-w-sm lg:max-w-none">
-            <HeroImage car={heroCar} hasImage={heroHasImage} />
-          </Reveal>
-        </div>
-
-        <div className="hidden lg:absolute lg:inset-y-24 lg:left-[60%] lg:block lg:w-px lg:bg-hairline" />
-
-        <div className="relative z-10 mt-20 lg:absolute lg:bottom-12 lg:left-16 lg:mt-0">
-          <ScrollCue />
-        </div>
+        <HomeHero
+          featuredCars={featuredCars}
+          hasImageBySlug={heroHasImageBySlug}
+        />
       </section>
 
       {/* FEATURED */}
@@ -130,24 +96,33 @@ export default async function Home() {
       )}
 
       {/* STAT / PROOF BAND */}
-      <section className="border-y border-hairline pb-32 pt-20 md:pb-48 md:pt-24">
+      <section className="relative border-y border-hairline pb-32 pt-20 md:pb-48 md:pt-24">
+        <div className="absolute inset-x-0 top-0">
+          <NeonDivider />
+        </div>
         <div className={`grid ${CANVAS} grid-cols-12 gap-y-16 ${GUTTER}`}>
           <Reveal className="col-span-12 sm:col-span-6 lg:col-span-4">
-            <p className={DISPLAY_HEADLINE}>{STATS[0].value}</p>
+            <p className={DISPLAY_HEADLINE}>
+              <CountUp value={STATS[0].value} />
+            </p>
             <p className={`mt-4 ${EYEBROW}`}>{STATS[0].label}</p>
           </Reveal>
           <Reveal
             delay={0.15}
             className="col-span-12 sm:col-span-6 lg:col-span-4 lg:col-start-6 lg:border-l lg:border-hairline lg:pl-12"
           >
-            <p className={DISPLAY_HEADLINE}>{STATS[1].value}</p>
+            <p className={DISPLAY_HEADLINE}>
+              <CountUp value={STATS[1].value} />
+            </p>
             <p className={`mt-4 ${EYEBROW}`}>{STATS[1].label}</p>
           </Reveal>
           <Reveal
             delay={0.3}
             className="col-span-12 sm:col-span-6 lg:col-span-3 lg:col-start-10 lg:border-l lg:border-hairline lg:pl-12"
           >
-            <p className={DISPLAY_HEADLINE}>{STATS[2].value}</p>
+            <p className={DISPLAY_HEADLINE}>
+              <CountUp value={STATS[2].value} />
+            </p>
             <p className={`mt-4 ${EYEBROW}`}>{STATS[2].label}</p>
           </Reveal>
         </div>
@@ -183,7 +158,10 @@ export default async function Home() {
       </section>
 
       {/* LOCATION / CTA */}
-      <section className="border-t border-hairline py-32 md:py-48">
+      <section className="relative border-t border-hairline py-32 md:py-48">
+        <div className="absolute inset-x-0 top-0">
+          <NeonDivider />
+        </div>
         <div className={`grid ${CANVAS} grid-cols-12 gap-6 ${GUTTER}`}>
           <Reveal className="col-span-12 lg:col-span-3">
             <p className={EYEBROW}>Visit the lot</p>

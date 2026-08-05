@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import LeadModalProvider from "@/components/providers/LeadModalProvider";
+import Atmosphere from "@/components/ui/Atmosphere";
 import Footer from "@/components/ui/Footer";
 import Nav from "@/components/ui/Nav";
 import { inter, spaceGrotesk } from "@/lib/fonts";
@@ -28,9 +29,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceGrotesk.variable} ${inter.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${inter.variable} theme-miami-vice h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-bg text-text font-body">
+        <Atmosphere />
         <SmoothScrollProvider>
           <LeadModalProvider>
             <Nav />

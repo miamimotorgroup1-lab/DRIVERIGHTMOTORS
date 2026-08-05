@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import LeadTrigger from "@/components/ui/LeadTrigger";
+import NeonDivider from "@/components/ui/NeonDivider";
 import Reveal from "@/components/ui/Reveal";
 import { DEALER } from "@/lib/dealer";
 import { CANVAS, GUTTER } from "@/lib/layout";
@@ -68,7 +69,10 @@ export default function AboutPage() {
       </section>
 
       {/* TRUST POINTS */}
-      <section className="border-y border-hairline py-32 md:py-48">
+      <section className="relative border-y border-hairline py-32 md:py-48">
+        <div className="absolute inset-x-0 top-0">
+          <NeonDivider />
+        </div>
         <div className={`grid ${CANVAS} grid-cols-12 gap-y-16 ${GUTTER}`}>
           <Reveal className="col-span-12 sm:col-span-6 lg:col-span-4">
             <p className="font-display text-display-sm font-semibold text-text">

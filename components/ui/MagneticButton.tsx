@@ -42,9 +42,10 @@ type MagneticButtonAsLink = CommonProps &
 export type MagneticButtonProps = MagneticButtonAsButton | MagneticButtonAsLink;
 
 const variantClasses: Record<MagneticButtonVariant, string> = {
-  accent: "bg-accent text-bg hover:bg-accent-hover",
+  accent:
+    "bg-accent text-bg hover:bg-accent-hover hover:shadow-[0_0_28px_rgba(255,46,136,0.5)]",
   ghost:
-    "bg-transparent text-text border border-hairline hover:border-accent hover:text-accent",
+    "bg-transparent text-text border border-hairline hover:border-accent-2 hover:text-accent-2 hover:shadow-[0_0_22px_rgba(34,211,238,0.35)]",
 };
 
 export default function MagneticButton({
@@ -74,7 +75,7 @@ export default function MagneticButton({
     y.set(0);
   }
 
-  const baseClass = `inline-flex items-center justify-center gap-2 rounded-pill px-6 py-3 text-sm font-medium transition-colors duration-300 ${variantClasses[variant]} ${className}`;
+  const baseClass = `inline-flex items-center justify-center gap-2 rounded-pill px-6 py-3 text-sm font-medium transition-[background-color,border-color,color,box-shadow] duration-300 ${variantClasses[variant]} ${className}`;
   const motionStyle = shouldReduceMotion
     ? undefined
     : { x: springX, y: springY };

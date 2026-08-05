@@ -118,9 +118,9 @@ export default function Gallery({ images, hasImageList, title }: GalleryProps) {
               onClick={() => goTo(photoIndex)}
               aria-label={`View photo ${photoIndex + 1}`}
               aria-current={photoIndex === index}
-              className={`relative aspect-[4/3] w-20 shrink-0 overflow-hidden border transition-colors duration-300 ${
+              className={`relative aspect-[4/3] w-20 shrink-0 overflow-hidden border transition-[border-color,box-shadow] duration-300 ${
                 photoIndex === index
-                  ? "border-accent"
+                  ? "border-accent-2 shadow-[0_0_0_2px_rgba(34,211,238,0.35)]"
                   : "border-hairline hover:border-muted"
               }`}
             >

@@ -3,8 +3,8 @@ export const DEALER = {
   address: "1649 SW 27th St, Miami, FL",
   addressLines: ["1649 SW 27th St", "Miami, FL"] as const,
   phone: {
-    display: "(786) 788-7879",
-    href: "tel:+17867887879",
+    display: "(786) 765-8899",
+    href: "tel:+17867658899",
   },
   hours: [
     { day: "Mon – Fri", time: "10 AM – 8 PM" },

@@ -1,7 +1,7 @@
 export const DEALER = {
   name: "Drive Right Motors",
-  address: "1641 NW 27th St, Miami, FL",
-  addressLines: ["1641 NW 27th St", "Miami, FL"] as const,
+  address: "1649 SW 27th St, Miami, FL",
+  addressLines: ["1649 SW 27th St", "Miami, FL"] as const,
   phone: {
     display: "(786) 788-7879",
     href: "tel:+17867887879",
@@ -12,7 +12,7 @@ export const DEALER = {
     { day: "Sunday", time: "Closed" },
   ],
   mapEmbedUrl:
-    "https://www.google.com/maps?q=1641+NW+27th+St+Miami+FL&output=embed",
+    "https://www.google.com/maps?q=1649+SW+27th+St+Miami+FL&output=embed",
   directionsUrl:
-    "https://www.google.com/maps/dir/?api=1&destination=1641+NW+27th+St+Miami+FL",
+    "https://www.google.com/maps/dir/?api=1&destination=1649+SW+27th+St+Miami+FL",
 } as const;
